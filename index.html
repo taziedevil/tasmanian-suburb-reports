@@ -3,51 +3,131 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Tasmanian Suburb Reports</title>
+  <title>Tasmanian Suburb Reports (Filter by Municipality)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <style>
-    body { margin: 0; padding: 0; }
+    body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { height: 100vh; }
+    #controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    #controls select {
+      margin-bottom: 6px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
+  <div id="controls">
+    <select id="municipalitySelect">
+      <option value="">🏛️ Filter by Municipality...</option>
+    </select>
+    <select id="suburbSelect">
+      <option value="">🔍 Search suburb...</option>
+    </select>
+  </div>
   <div id="map"></div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
   <script>
     const map = L.map('map').setView([-42.0, 147.0], 7);
+    const allMarkers = [];
+    const markerCluster = L.markerClusterGroup();
+    const suburbSelect = document.getElementById("suburbSelect");
+    const municipalitySelect = document.getElementById("municipalitySelect");
+    const allMunicipalities = new Set();
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    function createMarker(row, index) {
+      const popup = `
+        <b>${row.Suburb}</b><br>
+        <a href="${row.Houses}" target="_blank">🏠 Houses</a><br>
+        <a href="${row.Other}" target="_blank">🏢 Other Dwellings</a><br>
+        <a href="${row.Land}" target="_blank">🌱 Land</a><br>
+        <a href="${row.Rental}" target="_blank">🏡 Rental</a>
+      `;
+      const marker = L.marker([parseFloat(row.Latitude), parseFloat(row.Longitude)])
+        .bindPopup(popup);
+      marker.suburb = row.Suburb;
+      marker.municipality = row.MUNICIPALITY || "";
+      marker.index = index;
+      return marker;
+    }
+
+    function updateMunicipalityList() {
+      municipalitySelect.innerHTML = '<option value="">🏛️ Filter by Municipality...</option>';
+      Array.from(allMunicipalities).sort().forEach(muni => {
+        const opt = document.createElement("option");
+        opt.value = muni;
+        opt.textContent = muni;
+        municipalitySelect.appendChild(opt);
+      });
+    }
+
+    function updateMarkers(muniFilter = "") {
+      markerCluster.clearLayers();
+      suburbSelect.innerHTML = '<option value="">🔍 Search suburb...</option>';
+      allMarkers.forEach((marker, index) => {
+        const matchesMuni = !muniFilter || marker.municipality === muniFilter;
+        if (matchesMuni) {
+          markerCluster.addLayer(marker);
+          const opt = document.createElement("option");
+          opt.value = marker.index;
+          opt.textContent = marker.suburb;
+          suburbSelect.appendChild(opt);
+        }
+      });
+      map.addLayer(markerCluster);
+    }
+
     Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99zd3nSrqJT0DnLG3rWuVjUQZigf3k6uBoAE4_wKPyYaMRX_dwFbp3dVEh5AYCNA2gY8QpsLdJS7v/pub?output=csv", {
       download: true,
       header: true,
       complete: function(results) {
-        console.log("Loaded rows:", results.data.length);
-        results.data.forEach(row => {
-          console.log(row);  // Debugging output
+        results.data.forEach((row, index) => {
           if (row.Latitude && row.Longitude) {
-            const popup = `
-              <b>${row.Suburb}</b><br>
-              <a href="${row.Houses}" target="_blank">🏠 Houses</a><br>
-              <a href="${row.Other}" target="_blank">🏢 Other Dwellings</a><br>
-              <a href="${row.Land}" target="_blank">🌱 Land</a><br>
-              <a href="${row.Rental}" target="_blank">🏡 Rental</a>
-            `;
-            L.marker([parseFloat(row.Latitude), parseFloat(row.Longitude)])
-              .bindPopup(popup)
-              .addTo(map);
+            const marker = createMarker(row, index);
+            allMarkers.push(marker);
+            if (row.MUNICIPALITY) {
+              allMunicipalities.add(row.MUNICIPALITY);
+            }
           }
         });
+        updateMunicipalityList();
+        updateMarkers();
       },
       error: function(err) {
         console.error("CSV loading failed:", err);
       }
     });
+
+    municipalitySelect.addEventListener("change", function() {
+      updateMarkers(this.value);
+    });
+
+    suburbSelect.addEventListener("change", function() {
+      const marker = allMarkers[this.value];
+      if (marker) {
+        map.setView(marker.getLatLng(), 14);
+        marker.openPopup();
+      }
+    });
   </script>
 </body>
 </html>
-
