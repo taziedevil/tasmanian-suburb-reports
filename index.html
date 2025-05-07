@@ -12,8 +12,24 @@
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { height: 100vh; }
     #controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.85);
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+      top: 100px;
+      left: 10px;
+      max-width: 480px;
+      z-index: 1000;
+    }
+      max-width: 220px;
+
       position: absolute;
-      top: 60px;
+      top: 100px;
       top: 10px;
       left: 10px;
       z-index: 1000;
@@ -89,8 +105,8 @@
     const municipalitySelect = document.getElementById("municipalitySelect");
     const allMunicipalities = new Set();
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors | &copy; OpenStreetMap contributors'
     }).addTo(map);
 
     function createMarker(row, index) {
