@@ -65,7 +65,7 @@
       const marker = L.marker([parseFloat(row.Latitude), parseFloat(row.Longitude)])
         .bindPopup(popup);
       marker.suburb = row.Suburb;
-      marker.municipality = row.MUNICIPALITY || "";
+      marker.municipality = row.Municipality || "";
       marker.index = index;
       return marker;
     }
