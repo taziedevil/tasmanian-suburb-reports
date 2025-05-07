@@ -32,21 +32,34 @@
       download: true,
       header: true,
       complete: function(results) {
-        results.data.forEach(row => {
-          const lat = parseFloat(row.Latitude);
-          const lon = parseFloat(row.Longitude);
-          const suburb = row.Suburb;
+        results.data.forEach((row, index) => {
+          try {
+            const lat = parseFloat(row.Latitude || row.latitude);
+            const lon = parseFloat(row.Longitude || row.longitude);
+            const suburb = row.Suburb || row.suburb || row.LOC_NAME || "Unknown";
+            const houses = row.Houses || row.houses || "";
+            const other = row.Other || row.other || "";
+            const land = row.Land || row.land || "";
+            const rental = row.Rental || row.rental || "";
 
-          if (!isNaN(lat) && !isNaN(lon)) {
-            const popup = `<b>${suburb}</b><br>
-              <a href="${row.Houses}" target="_blank">🏠 Houses</a>
-              <a href="${row.Other}" target="_blank">🏢 Other Dwellings</a>
-              <a href="${row.Land}" target="_blank">🌱 Land</a>
-              <a href="${row.Rental}" target="_blank">🏡 Rental</a>`;
+            if (!isNaN(lat) && !isNaN(lon)) {
+              const popup = `<b>${suburb}</b><br>
+                <a href="${houses}" target="_blank">🏠 Houses</a>
+                <a href="${other}" target="_blank">🏢 Other Dwellings</a>
+                <a href="${land}" target="_blank">🌱 Land</a>
+                <a href="${rental}" target="_blank">🏡 Rental</a>`;
 
-            L.marker([lat, lon]).bindPopup(popup).addTo(map);
+              L.marker([lat, lon]).bindPopup(popup).addTo(map);
+            } else {
+              console.warn(`Invalid coordinates at row ${index + 2}:`, row);
+            }
+          } catch (e) {
+            console.error(`Error processing row ${index + 2}:`, e, row);
           }
         });
+      },
+      error: function(err) {
+        console.error("CSV parsing failed:", err);
       }
     });
   </script>
