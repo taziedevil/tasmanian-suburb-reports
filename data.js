@@ -1,1 +1,0 @@
-const suburbData = {"type": "FeatureCollection", "features": []}
