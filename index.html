@@ -13,6 +13,7 @@
     #map { height: 100vh; }
     #controls {
       position: absolute;
+      top: 60px;
       top: 10px;
       left: 10px;
       z-index: 1000;
@@ -29,6 +30,8 @@
 </head>
 <body>
   <div id="controls">
+    <button id="zoomBtn">🔍 Zoom to Municipality</button>
+    <button id="resetBtn">🔄 Reset View</button>
     <select id="municipalitySelect">
       <option value="">🏛️ Filter by Municipality...</option>
     </select>
@@ -38,9 +41,45 @@
   </div>
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js">document.getElementById("zoomBtn").addEventListener("click", function() {
+      const selected = municipalitySelect.value;
+      if (selected) {
+        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
+        const group = L.featureGroup(visibleMarkers);
+        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      map.setView([-42.0, 147.0], 7);
+    });
+    </script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js">document.getElementById("zoomBtn").addEventListener("click", function() {
+      const selected = municipalitySelect.value;
+      if (selected) {
+        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
+        const group = L.featureGroup(visibleMarkers);
+        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      map.setView([-42.0, 147.0], 7);
+    });
+    </script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js">document.getElementById("zoomBtn").addEventListener("click", function() {
+      const selected = municipalitySelect.value;
+      if (selected) {
+        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
+        const group = L.featureGroup(visibleMarkers);
+        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      map.setView([-42.0, 147.0], 7);
+    });
+    </script>
 
   <script>
     const map = L.map('map').setView([-42.0, 147.0], 7);
@@ -94,6 +133,10 @@
         }
       });
       map.addLayer(markerCluster);
+        if (muniFilter) {
+          const bounds = markerCluster.getBounds();
+          if (bounds.isValid()) map.fitBounds(bounds);
+        }
     }
 
     Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99zd3nSrqJT0DnLG3rWuVjUQZigf3k6uBoAE4_wKPyYaMRX_dwFbp3dVEh5AYCNA2gY8QpsLdJS7v/pub?output=csv", {
@@ -104,8 +147,8 @@
           if (row.Latitude && row.Longitude) {
             const marker = createMarker(row, index);
             allMarkers.push(marker);
-            if (row.MUNICIPALITY) {
-              allMunicipalities.add(row.MUNICIPALITY);
+            if (row.Municipality) {
+              allMunicipalities.add(row.Municipality);
             }
           }
         });
@@ -128,6 +171,18 @@
         marker.openPopup();
       }
     });
-  </script>
+  document.getElementById("zoomBtn").addEventListener("click", function() {
+      const selected = municipalitySelect.value;
+      if (selected) {
+        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
+        const group = L.featureGroup(visibleMarkers);
+        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
+      }
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      map.setView([-42.0, 147.0], 7);
+    });
+    </script>
 </body>
 </html>
