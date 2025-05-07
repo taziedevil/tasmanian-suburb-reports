@@ -28,6 +28,7 @@
       complete: function(results) {
         console.log("Loaded rows:", results.data.length);
         results.data.forEach(row => {
+           console.log(row); // Add this
           if (row.Latitude && row.Longitude) {
             const popup = `
               <b>${row.Suburb}</b><br>
