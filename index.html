@@ -133,6 +133,15 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       `;
       const marker = L.marker([parseFloat(row.Latitude), parseFloat(row.Longitude)])
         .bindPopup(popup);
+      
+// Suburb label below pin
+marker.bindTooltip(row.Suburb, {
+  permanent: true,
+  direction: 'bottom',
+  className: 'suburb-label',
+  offset: [0, 12]  // moves the label further below the icon
+});
+
       marker.suburb = row.Suburb;
       marker.municipality = row.Municipality || "";
       marker.index = index;
