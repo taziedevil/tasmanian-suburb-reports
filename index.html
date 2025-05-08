@@ -217,9 +217,31 @@ marker.bindTooltip(row.Suburb, {
       }
     });
 
-    document.getElementById("resetBtn").addEventListener("click", function() {
-      map.setView([-42.0, 147.0], 7);
-    });
+  document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    map.setView([-42.04, 146.8], 7);
+
+    // ✅ Clear the municipality filter
+    const muniSelect = document.getElementById("municipalityFilter");
+    if (muniSelect) {
+      muniSelect.value = "";
+      muniSelect.dispatchEvent(new Event("change"));
+    }
+
+    // ✅ Optional: also clear the suburb search box
+    const suburbInput = document.getElementById("suburbSearch");
+    if (suburbInput) {
+      suburbInput.value = "";
+      suburbInput.dispatchEvent(new Event("input"));
+    }
+
+    // ✅ Optional: reset highlighted marker color if used
+    if (typeof selectedMarker !== 'undefined' && selectedMarker) {
+      selectedMarker.setIcon(blueIcon);
+      selectedMarker = null;
+    }
+  });
+});
 
     document.getElementById("togglePanel").addEventListener("click", function() {
       const panel = document.getElementById("controls");
