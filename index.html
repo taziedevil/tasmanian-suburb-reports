@@ -3,15 +3,17 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Tasmanian Suburb + Municipality Real Estate Map</title>
+  <title>Tasmanian Suburb Reports (Collapsible Mobile UI)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <style>
-    body { margin: 0; font-family: sans-serif; }
-    #map { height: 100vh; width: 100vw; }
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    #map { height: 100vh; }
     #togglePanel {
+      transition: background 0.3s ease;
+
       position: absolute;
       top: 10px;
       left: 10px;
@@ -24,8 +26,13 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
     #controls {
+      transition: all 0.3s ease;
+      transform: translateY(-10px);
+      opacity: 0;
+      visibility: hidden;
+
       position: absolute;
-      top: 90px;
+      top: 50px;
       left: 10px;
       z-index: 1000;
       background: rgba(255,255,255,0.95);
@@ -37,33 +44,6 @@
       gap: 10px;
       max-width: 90vw;
     }
-    #sidePanel {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100%;
-      overflow-y: auto;
-      background: #f9f9f9;
-      padding: 16px;
-      width: 260px;
-      max-width: 90vw;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-      z-index: 1200;
-      border-left: 1px solid #ccc;
-
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 250px;
-      padding: 16px;
-      background: #f9f9f9;
-      border-left: 1px solid #ccc;
-      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-      z-index: 1200;
-      display: none;
-    }
-    #sidePanel h3 { margin-top: 0; }
     select, button {
       width: 100%;
       font-size: 14px;
@@ -74,40 +54,39 @@
         visibility: visible !important;
         opacity: 1 !important;
         transform: none !important;
+      }
+      #controls {
+      transition: all 0.3s ease;
+      transform: translateY(-10px);
+      opacity: 0;
+      visibility: hidden;
+
+        display: flex !important;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        flex-direction: column;
         max-width: 280px;
       }
       #togglePanel {
+      transition: background 0.3s ease;
+
         display: none;
       }
     }
   </style>
 </head>
 <body>
-<button id="toggleControls" style="position:absolute;top:10px;left:10px;z-index:1000;background:#fff;border:1px solid #ccc;padding:6px 10px;border-radius:5px;">☰ Show Tools</button>
-<div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
-  <label for="suburbSearch">Search Suburb:</label><br>
-  <input type="text" id="suburbSearch" placeholder="Enter suburb name..."><br><br>
-  <label for="municipalityFilter">Filter by Municipality:</label><br>
-  <select id="municipalityFilter"><option value="">All Municipalities</option></select><br><br>
-  <button id="zoomToMunicipality">Zoom to Municipality</button><br><br>
-  <button id="resetView">Reset View</button>
-</div>
-
   <div id="togglePanel">☰ Controls</div>
   <div id="controls">
-    <select id="suburbSelect">
-      <option value="">🔍 Search suburb...</option>
-    </select>
+    <button id="zoomBtn">🔍 Zoom to Municipality</button>
+    <button id="resetBtn">🔄 Reset View</button>
     <select id="municipalitySelect">
       <option value="">🏛️ Filter by Municipality...</option>
     </select>
-    <button id="zoomBtn">🔍 Zoom to Municipality</button>
-    <button id="resetBtn">🔄 Reset View</button>
-  </div>
-  <div id="sidePanel">
-    <h3 id="lgaName">Municipality</h3>
-    <p><strong>Median Price:</strong> <span id="medianPrice">N/A</span></p>
-    <p><strong>Sales:</strong> <span id="sales">N/A</span></p>
+    <select id="suburbSelect">
+      <option value="">🔍 Search suburb...</option>
+    </select>
   </div>
   <div id="map"></div>
 
@@ -122,7 +101,6 @@
     const suburbSelect = document.getElementById("suburbSelect");
     const municipalitySelect = document.getElementById("municipalitySelect");
     const allMunicipalities = new Set();
-    const sidePanel = document.getElementById("sidePanel");
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors'
@@ -185,6 +163,9 @@
         });
         updateMunicipalityList();
         updateMarkers();
+      },
+      error: function(err) {
+        console.error("CSV loading failed:", err);
       }
     });
 
@@ -211,81 +192,23 @@
 
     document.getElementById("resetBtn").addEventListener("click", function() {
       map.setView([-42.0, 147.0], 7);
-      municipalitySelect.value = "";
-      updateMarkers();
-      sidePanel.style.display = "none";
     });
 
     document.getElementById("togglePanel").addEventListener("click", function() {
       const panel = document.getElementById("controls");
-      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
-    });
-
-    // Load municipality pins from Google Sheet
-fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/Sheet1')
-  .then(res => res.json())
-  .then(data => {
-    data.forEach(muni => {
-      if (muni.Latitude && muni.Longitude) {
-        const marker = L.marker([parseFloat(muni.Latitude), parseFloat(muni.Longitude)], {
-          icon: L.icon({
-            iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-            popupAnchor: [0, -28]
-          })
-        }).addTo(map);
-        marker.on("click", function () {
-          document.getElementById("lgaName").textContent = muni.LGA_NAME || "N/A";
-          document.getElementById("medianPrice").textContent = muni.MEDIAN_PRICE || "N/A";
-          document.getElementById("sales").textContent = muni.SALES || "N/A";
-          sidePanel.style.display = "block";
-          map.setView(marker.getLatLng(), 10);
-        });
+      if (panel.style.visibility === "visible") {
+        panel.style.opacity = "0";
+        panel.style.transform = "translateY(-10px)";
+        panel.style.visibility = "hidden";
+      } else {
+        panel.style.display = "flex";
+        setTimeout(() => {
+          panel.style.opacity = "1";
+          panel.style.transform = "translateY(0)";
+          panel.style.visibility = "visible";
+        }, 10);
       }
     });
-  });
-
-// Removed GeoJSON polygon loading below:
-    // fetch disabled (we use pins instead)
-      .then(res => res.json())
-      .then(data => {
-        const muniLayer = L.geoJSON(data, {
-          style: { color: "#0044cc", weight: 1, fillOpacity: 0.1 },
-          onEachFeature: function (feature, layer) {
-            layer.on("click", function () {
-              const props = feature.properties;
-              document.getElementById("lgaName").textContent = props.LGA_NAME || "N/A";
-              document.getElementById("medianPrice").textContent = props.MEDIAN_PRICE || "N/A";
-              document.getElementById("sales").textContent = props.SALES || "N/A";
-              sidePanel.style.display = "block";
-              map.fitBounds(layer.getBounds());
-            });
-          }
-        });
-        muniLayer.addTo(map);
-      });
   </script>
-
-<style>
-.suburb-label {
-  font-size: 12px;
-  font-weight: bold;
-  color: #003366;
-  text-shadow: 1px 1px 2px white;
-}
-</style>
-<script>
-document.getElementById('toggleControls').addEventListener('click', function () {
-  const controls = document.getElementById('controls');
-  if (controls.style.display === 'none') {
-    controls.style.display = 'block';
-    this.textContent = '✖ Hide Tools';
-  } else {
-    controls.style.display = 'none';
-    this.textContent = '☰ Show Tools';
-  }
-});
-</script>
 </body>
 </html>
