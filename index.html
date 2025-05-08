@@ -83,20 +83,27 @@
 </style>
 </head>
 <body>
-<button id="toggleControls" style="position:absolute;top:10px;left:10px;z-index:1000;">☰ Show Tools</button>
-<div id="controls" style="display:none;position:absolute;top:50px;left:10px;z-index:1000;background:white;padding:10px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+<button id="toggleControls" style="position:absolute;top:10px;left:10px;z-index:1000;background:#fff;border:1px solid #ccc;padding:6px 10px;border-radius:5px;" style="position:absolute;top:10px;left:10px;z-index:1000;">☰ Show Tools</button>
+<div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);" style="display:none;position:absolute;top:50px;left:10px;z-index:1000;background:white;padding:10px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+<label for="suburbSearch">Search Suburb:</label><br>
+<input type="text" id="suburbSearch" placeholder="Enter suburb name..."><br><br>
 
-  <div id="togglePanel">☰ Controls</div>
-  <div id="controls">
-    <button id="zoomBtn">🔍 Zoom to Municipality</button>
-    <button id="resetBtn">🔄 Reset View</button>
-    <select id="municipalitySelect">
-      <option value="">🏛️ Filter by Municipality...</option>
-    </select>
-    <select id="suburbSelect">
-      <option value="">🔍 Search suburb...</option>
-    </select>
-  </div>
+<label for="municipalityFilter">Filter by Municipality:</label><br>
+<select id="municipalityFilter"><option value="">All Municipalities</option></select><br><br>
+
+<button id="zoomToMunicipality">Zoom to Municipality</button><br><br>
+<button id="resetView">Reset View</button>
+</div>
+  <div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+<label for="suburbSearch">Search Suburb:</label><br>
+<input type="text" id="suburbSearch" placeholder="Enter suburb name..."><br><br>
+
+<label for="municipalityFilter">Filter by Municipality:</label><br>
+<select id="municipalityFilter"><option value="">All Municipalities</option></select><br><br>
+
+<button id="zoomToMunicipality">Zoom to Municipality</button><br><br>
+<button id="resetView">Reset View</button>
+</div>
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
