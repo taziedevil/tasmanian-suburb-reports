@@ -74,13 +74,7 @@
         display: none;
       }
     }
-  .suburb-label {
-  font-size: 12px;
-  font-weight: bold;
-  color: #003366;
-  text-shadow: 1px 1px 2px white;
-}
-</style>
+  </style>
 </head>
 <body>
   <div id="togglePanel">☰ Controls</div>
@@ -99,30 +93,9 @@
   </div>
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js">
-map.on('zoomend', () => {
-  const zoom = map.getZoom();
-  suburbTooltips.forEach(tip => {
-    tip.setOpacity(zoom >= 11 ? 1 : 0);
-  });
-});
-</script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js">
-map.on('zoomend', () => {
-  const zoom = map.getZoom();
-  suburbTooltips.forEach(tip => {
-    tip.setOpacity(zoom >= 11 ? 1 : 0);
-  });
-});
-</script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js">
-map.on('zoomend', () => {
-  const zoom = map.getZoom();
-  suburbTooltips.forEach(tip => {
-    tip.setOpacity(zoom >= 11 ? 1 : 0);
-  });
-});
-</script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
   <script>
     const map = L.map('map').setView([-42.0, 147.0], 7);
@@ -239,13 +212,6 @@ map.on('zoomend', () => {
         }, 10);
       }
     });
-  
-map.on('zoomend', () => {
-  const zoom = map.getZoom();
-  suburbTooltips.forEach(tip => {
-    tip.setOpacity(zoom >= 11 ? 1 : 0);
-  });
-});
-</script>
+  </script>
 </body>
 </html>
