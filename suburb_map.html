@@ -213,20 +213,44 @@
 
     // Load municipality pins from Google Sheet
 fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/Sheet1')
-  
-.then(res => {
-  if (!res.ok) throw new Error("Fetch failed: " + res.status);
-  return res.text();
-})
-.then(text => {
-  try {
-    return JSON.parse(text);
-  } catch (e) {
-    console.error("Failed to parse JSON. Raw text was:\n", text);
-    throw e;
-  }
-})
-
+  .then(res => res.text())
+  .then(text => {
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse municipality JSON:\n", text);
+      throw e;
+    }
+  })
+  .then(data => {
+    data.forEach(muni => {
+      if (muni.Lat && muni.Lng) {
+        const marker = L.marker([parseFloat(muni.Lat), parseFloat(muni.Lng)], {
+          icon: L.icon({
+            iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -28]
+          })
+        }).addTo(map);
+        marker.on("click", function () {
+          document.getElementById("lgaName").textContent = muni.Municipality || "N/A";
+          document.getElementById("medianPrice").textContent = muni.Median_House_Price || "N/A";
+          
+          document.getElementById("sales").textContent = muni.House_Sales || "N/A";
+          document.getElementById("unitPrice").textContent = muni.Median_Unit_Price || "N/A";
+          document.getElementById("unitSales").textContent = muni.Unit_Sales || "N/A";
+          document.getElementById("landPrice").textContent = muni.Median_Land_Price || "N/A";
+          document.getElementById("landSales").textContent = muni.Land_Sales || "N/A";
+    
+          sidePanel.style.display = "block";
+          map.setView(marker.getLatLng(), 10);
+        });
+      }
+    });
+  });
+fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/Sheet1')
+  .then(res => res.json())
   .then(data => {
     data.forEach(muni => {
       if (muni.Latitude && muni.Longitude) {
@@ -251,20 +275,7 @@ fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/She
 
 // Removed GeoJSON polygon loading below:
     // fetch disabled (we use pins instead)
-      
-.then(res => {
-  if (!res.ok) throw new Error("Fetch failed: " + res.status);
-  return res.text();
-})
-.then(text => {
-  try {
-    return JSON.parse(text);
-  } catch (e) {
-    console.error("Failed to parse JSON. Raw text was:\n", text);
-    throw e;
-  }
-})
-
+      .then(res => res.json())
       .then(data => {
         const muniLayer = L.geoJSON(data, {
           style: { color: "#0044cc", weight: 1, fillOpacity: 0.1 },
