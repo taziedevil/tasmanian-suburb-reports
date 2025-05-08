@@ -9,11 +9,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; }
-    #map { height: 100vh; }
+    body { margin: 0; font-family: sans-serif; }
+    #map { height: 100vh; width: 100vw; }
     #togglePanel {
-      transition: background 0.3s ease;
-
       position: absolute;
       top: 10px;
       left: 10px;
@@ -26,13 +24,8 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
     #controls {
-      transition: all 0.3s ease;
-      transform: translateY(-10px);
-      opacity: 0;
-      visibility: hidden;
-
       position: absolute;
-      top: 50px;
+      top: 90px;
       left: 10px;
       z-index: 1000;
       background: rgba(255,255,255,0.95);
@@ -44,6 +37,20 @@
       gap: 10px;
       max-width: 90vw;
     }
+    #sidePanel {
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 250px;
+      padding: 16px;
+      background: #f9f9f9;
+      border-left: 1px solid #ccc;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      z-index: 1200;
+      display: none;
+    }
+    #sidePanel h3 { margin-top: 0; }
     select, button {
       width: 100%;
       font-size: 14px;
@@ -54,38 +61,25 @@
         visibility: visible !important;
         opacity: 1 !important;
         transform: none !important;
-      }
-      #controls {
-      transition: all 0.3s ease;
-      transform: translateY(-10px);
-      opacity: 0;
-      visibility: hidden;
-
-        display: flex !important;
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        flex-direction: column;
         max-width: 280px;
       }
       #togglePanel {
-      transition: background 0.3s ease;
-
         display: none;
       }
     }
   </style>
+
 </head>
 <body>
   <div id="togglePanel">☰ Controls</div>
   <div id="controls">
-   
-    <select id="municipalitySelect">
-      <option value="">🏛️ Filter by Municipality...</option>
-    </select>
     <select id="suburbSelect">
       <option value="">🔍 Search suburb...</option>
     </select>
+    <select id="municipalitySelect">
+      <option value="">🏛️ Filter by Municipality...</option>
+    </select>
+   
      <button id="zoomBtn">🔍 Zoom to Municipality</button>
     <button id="resetBtn">🔄 Reset View</button>
   </div>
