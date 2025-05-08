@@ -3,7 +3,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Tasmanian Suburb Reports (Clean Map UI Reordered)</title>
+  <title>Tasmanian Suburb Reports (Collapsible Mobile UI)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
@@ -11,26 +11,53 @@
   <style>
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { height: 100vh; }
+    #togglePanel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1100;
+      background: #fff;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
     #controls {
       position: absolute;
-      top: 100px;
+      top: 50px;
       left: 10px;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255,255,255,0.95);
       padding: 10px;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      display: flex;
+      display: none;
       flex-direction: column;
       gap: 10px;
-      max-width: 300px;
+      max-width: 90vw;
     }
     select, button {
       width: 100%;
+      font-size: 14px;
+    }
+    @media(min-width: 768px) {
+      #controls {
+        display: flex !important;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        flex-direction: column;
+        max-width: 280px;
+      }
+      #togglePanel {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
+  <div id="togglePanel">☰ Controls</div>
   <div id="controls">
     <button id="zoomBtn">🔍 Zoom to Municipality</button>
     <button id="resetBtn">🔄 Reset View</button>
@@ -145,6 +172,11 @@
 
     document.getElementById("resetBtn").addEventListener("click", function() {
       map.setView([-42.0, 147.0], 7);
+    });
+
+    document.getElementById("togglePanel").addEventListener("click", function() {
+      const panel = document.getElementById("controls");
+      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
     });
   </script>
 </body>
