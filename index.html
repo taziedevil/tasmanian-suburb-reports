@@ -222,7 +222,7 @@ marker.bindTooltip(row.Suburb, {
     map.setView([-42.04, 146.8], 7);
 
     // ✅ Clear the municipality filter
-    const muniSelect = document.getElementById("municipalityFilter");
+    const muniSelect = document.getElementById("municipalitySelect");
     if (muniSelect) {
       muniSelect.value = "";
       muniSelect.dispatchEvent(new Event("change"));
