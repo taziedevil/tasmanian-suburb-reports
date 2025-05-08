@@ -234,7 +234,17 @@ fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/She
           })
         }).addTo(map);
         marker.on("click", function () {
-          document.getElementById("lgaName").textContent = muni.Municipality || "N/A";
+          try {
+      document.getElementById("lgaName").textContent = muni.Municipality || "N/A";
+      document.getElementById("medianPrice").textContent = muni.Median_House_Price || "N/A";
+      document.getElementById("sales").textContent = muni.House_Sales || "N/A";
+      document.getElementById("unitPrice").textContent = muni.Median_Unit_Price || "N/A";
+      document.getElementById("unitSales").textContent = muni.Unit_Sales || "N/A";
+      document.getElementById("landPrice").textContent = muni.Median_Land_Price || "N/A";
+      document.getElementById("landSales").textContent = muni.Land_Sales || "N/A";
+    } catch (e) {
+      console.error("Failed to populate side panel from municipality data", muni, e);
+    }
           document.getElementById("medianPrice").textContent = muni.Median_House_Price || "N/A";
           
           document.getElementById("sales").textContent = muni.House_Sales || "N/A";
