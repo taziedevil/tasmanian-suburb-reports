@@ -12,6 +12,8 @@
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { height: 100vh; }
     #togglePanel {
+      transition: background 0.3s ease;
+
       position: absolute;
       top: 10px;
       left: 10px;
@@ -24,8 +26,13 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }
     #controls {
+      transition: all 0.3s ease;
+      transform: translateY(-10px);
+      opacity: 0;
+      visibility: hidden;
+
       position: absolute;
-      top: 90px;
+      top: 50px;
       left: 10px;
       z-index: 1000;
       background: rgba(255,255,255,0.95);
@@ -43,6 +50,11 @@
     }
     @media(min-width: 768px) {
       #controls {
+      transition: all 0.3s ease;
+      transform: translateY(-10px);
+      opacity: 0;
+      visibility: hidden;
+
         display: flex !important;
         position: absolute;
         top: 10px;
@@ -51,6 +63,8 @@
         max-width: 280px;
       }
       #togglePanel {
+      transition: background 0.3s ease;
+
         display: none;
       }
     }
@@ -59,14 +73,9 @@
 <body>
   <div id="togglePanel">☰ Controls</div>
   <div id="controls">
-    <select id="suburbSelect">
-      <option value="">🔍 Search suburb...</option>
-    </select>
-    <select id="municipalitySelect">
-      <option value="">🏛️ Filter by Municipality...</option>
-    </select>
     <button id="zoomBtn">🔍 Zoom to Municipality</button>
     <button id="resetBtn">🔄 Reset View</button>
+    <select id="municipalitySelect">
       <option value="">🏛️ Filter by Municipality...</option>
     </select>
     <select id="suburbSelect">
@@ -181,7 +190,18 @@
 
     document.getElementById("togglePanel").addEventListener("click", function() {
       const panel = document.getElementById("controls");
-      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
+      if (panel.style.visibility === "visible") {
+        panel.style.opacity = "0";
+        panel.style.transform = "translateY(-10px)";
+        panel.style.visibility = "hidden";
+      } else {
+        panel.style.display = "flex";
+        setTimeout(() => {
+          panel.style.opacity = "1";
+          panel.style.transform = "translateY(0)";
+          panel.style.visibility = "visible";
+        }, 10);
+      }
     });
   </script>
 </body>
