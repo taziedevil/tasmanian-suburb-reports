@@ -32,7 +32,7 @@
       visibility: hidden;
 
       position: absolute;
-      top: 50px;
+      top: 70px;
       left: 10px;
       z-index: 1000;
       background: rgba(255,255,255,0.95);
@@ -79,14 +79,15 @@
 <body>
   <div id="togglePanel">☰ Controls</div>
   <div id="controls">
-    <button id="zoomBtn">🔍 Zoom to Municipality</button>
-    <button id="resetBtn">🔄 Reset View</button>
-    <select id="municipalitySelect">
-      <option value="">🏛️ Filter by Municipality...</option>
-    </select>
     <select id="suburbSelect">
       <option value="">🔍 Search suburb...</option>
     </select>
+    <select id="municipalitySelect">
+      <option value="">🏛️ Filter by Municipality...</option>
+    </select>
+    <button id="zoomBtn">🔍 Zoom to Municipality</button>
+    <button id="resetBtn">🔄 Reset View</button>
+        
   </div>
   <div id="map"></div>
 
