@@ -3,7 +3,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Tasmanian Suburb Reports (Filter by Municipality)</title>
+  <title>Tasmanian Suburb Reports (Clean Map UI Reordered)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
@@ -12,34 +12,20 @@
     body { margin: 0; padding: 0; font-family: sans-serif; }
     #map { height: 100vh; }
     #controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 10px;
-      background-color: rgba(255, 255, 255, 0.85);
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      top: 100px;
-      left: 10px;
-      max-width: 480px;
-      z-index: 1000;
-    }
-      max-width: 220px;
-
       position: absolute;
       top: 100px;
-      top: 10px;
       left: 10px;
       z-index: 1000;
-      background: white;
+      background: rgba(255, 255, 255, 0.85);
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
     }
-    #controls select {
-      margin-bottom: 6px;
+    select, button {
       width: 100%;
     }
   </style>
@@ -57,45 +43,9 @@
   </div>
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js">document.getElementById("zoomBtn").addEventListener("click", function() {
-      const selected = municipalitySelect.value;
-      if (selected) {
-        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
-        const group = L.featureGroup(visibleMarkers);
-        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
-      }
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", function() {
-      map.setView([-42.0, 147.0], 7);
-    });
-    </script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js">document.getElementById("zoomBtn").addEventListener("click", function() {
-      const selected = municipalitySelect.value;
-      if (selected) {
-        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
-        const group = L.featureGroup(visibleMarkers);
-        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
-      }
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", function() {
-      map.setView([-42.0, 147.0], 7);
-    });
-    </script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js">document.getElementById("zoomBtn").addEventListener("click", function() {
-      const selected = municipalitySelect.value;
-      if (selected) {
-        const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
-        const group = L.featureGroup(visibleMarkers);
-        if (group.getBounds().isValid()) map.fitBounds(group.getBounds());
-      }
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", function() {
-      map.setView([-42.0, 147.0], 7);
-    });
-    </script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
   <script>
     const map = L.map('map').setView([-42.0, 147.0], 7);
@@ -106,7 +56,7 @@
     const allMunicipalities = new Set();
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors | &copy; OpenStreetMap contributors'
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors'
     }).addTo(map);
 
     function createMarker(row, index) {
@@ -149,10 +99,6 @@
         }
       });
       map.addLayer(markerCluster);
-        if (muniFilter) {
-          const bounds = markerCluster.getBounds();
-          if (bounds.isValid()) map.fitBounds(bounds);
-        }
     }
 
     Papa.parse("https://docs.google.com/spreadsheets/d/e/2PACX-1vQ99zd3nSrqJT0DnLG3rWuVjUQZigf3k6uBoAE4_wKPyYaMRX_dwFbp3dVEh5AYCNA2gY8QpsLdJS7v/pub?output=csv", {
@@ -187,7 +133,8 @@
         marker.openPopup();
       }
     });
-  document.getElementById("zoomBtn").addEventListener("click", function() {
+
+    document.getElementById("zoomBtn").addEventListener("click", function() {
       const selected = municipalitySelect.value;
       if (selected) {
         const visibleMarkers = allMarkers.filter(m => m.municipality === selected);
@@ -199,6 +146,6 @@
     document.getElementById("resetBtn").addEventListener("click", function() {
       map.setView([-42.0, 147.0], 7);
     });
-    </script>
+  </script>
 </body>
 </html>
