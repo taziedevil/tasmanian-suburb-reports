@@ -193,16 +193,9 @@
       }
     });
 
-    document.getElementById("resetBtn").addEventListener("click", function () {
-  map.setView([-42.04, 146.8], 7);
-
-  // Reset municipality filter
-  const muniSelect = document.getElementById("municipalityFilter");
-  muniSelect.value = "";
-
-  // Optionally trigger the filter logic manually
-  muniSelect.dispatchEvent(new Event("change"));
-});
+    document.getElementById("resetBtn").addEventListener("click", function() {
+      map.setView([-42.0, 147.0], 7);
+    });
 
     document.getElementById("togglePanel").addEventListener("click", function() {
       const panel = document.getElementById("controls");
