@@ -78,18 +78,15 @@
 </head>
 <body>
   <div id="togglePanel">☰ Controls</div>
-  <div id="controls" style="top: 80px;">
+  <div id="controls">
+    <button id="zoomBtn">🔍 Zoom to Municipality</button>
+    <button id="resetBtn">🔄 Reset View</button>
+    <select id="municipalitySelect">
+      <option value="">🏛️ Filter by Municipality...</option>
+    </select>
     <select id="suburbSelect">
       <option value="">🔍 Search suburb...</option>
     </select>
-    <select id="municipalitySelect">
-      <option value="">🏛️ Filter by Municipality...</option>
-        </select>
-    <button id="zoomBtn">🔍 Zoom to Municipality</button>
-    <button id="resetBtn">🔄 Reset View</button>
-    
-  
-    
   </div>
   <div id="map"></div>
 
@@ -105,7 +102,24 @@
     const municipalitySelect = document.getElementById("municipalitySelect");
     const allMunicipalities = new Set();
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    const blueIcon = L.icon({
+  iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+const redIcon = L.icon({
+  iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+let suburbMarkers = {};
+let selectedMarker = null;
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://carto.com/">CARTO</a> contributors'
     }).addTo(map);
 
