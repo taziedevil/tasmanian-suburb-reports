@@ -80,20 +80,11 @@
         display: none;
       }
     }
-  
-@media (max-width: 600px) {
-  #controls {
-    top: 100px !important;
-  }
-  #toggleControls {
-    top: 60px !important;
-  }
-}
-</style>
+  </style>
 </head>
 <body>
 <button id="toggleControls" style="position:absolute;top:10px;left:10px;z-index:1000;background:#fff;border:1px solid #ccc;padding:6px 10px;border-radius:5px;">☰ Show Tools</button>
-<div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);text-align:left;" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+<div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
   <label for="suburbSearch">Search Suburb:</label><br>
   <input type="text" id="suburbSearch" placeholder="Enter suburb name..."><br><br>
   <label for="municipalityFilter">Filter by Municipality:</label><br>
@@ -103,7 +94,7 @@
 </div>
 
   <div id="togglePanel">☰ Controls</div>
-  <div id="controls" style="display:none;position:absolute;top:60px;left:10px;width:280px;z-index:1000;background:white;padding:12px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);text-align:left;">
+  <div id="controls">
     <select id="suburbSelect">
       <option value="">🔍 Search suburb...</option>
     </select>
@@ -282,15 +273,6 @@ fetch('https://opensheet.elk.sh/1vbmHTf69XVp827i8al6erUSslZXS7qsTj2RUMfhw2zc/She
   font-weight: bold;
   color: #003366;
   text-shadow: 1px 1px 2px white;
-}
-
-@media (max-width: 600px) {
-  #controls {
-    top: 100px !important;
-  }
-  #toggleControls {
-    top: 60px !important;
-  }
 }
 </style>
 <script>
